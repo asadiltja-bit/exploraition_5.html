@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS — The Future of Sport & Lifestyle 2030</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Newsreader (Editorial Serif) & Plus Jakarta Sans (Modern Technical Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              sand: '#F7F5F0',
+              sandDark: '#EFECE6',
+              charcoal: '#181816',
+              mutedCharcoal: '#2D2D2A',
+              accent: '#C85A32', // Terracotta accent
+              olive: '#4A5340',
+              paper: '#FAF9F5',
+            },
+            dark: {
+              bg: '#121210',
+              card: '#1E1E1B',
+              border: '#2E2E2A',
+              text: '#ECE9E2',
+              muted: '#A09E95',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .font-serif-editorial {
+      font-family: 'Newsreader', Georgia, serif;
+    }
+
+    /* Grain Texture overlay for organic paper feeling */
+    .grain-overlay {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    /* Reading Progress Bar */
+    #progress-bar {
+      width: 0%;
+      transition: width 0.1s ease-out;
+    }
+
+    /* Hide Scrollbar for ultra clean look */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Custom range input styling */
+    input[type=range] {
+      accent-color: #C85A32;
+    }
+  </style>
+</head>
+<body class="bg-brand-sand text-brand-charcoal dark:bg-dark-bg dark:text-dark-text antialiased selection:bg-brand-accent selection:text-white relative">
+
+  <!-- Reading Progress Bar -->
+  <div class="fixed top-0 left-0 right-0 h-1 bg-brand-sandDark dark:bg-dark-border z-50">
+    <div id="progress-bar" class="h-full bg-brand-accent"></div>
+  </div>
+
+  <!-- Grain Texture Overlay -->
+  <div class="pointer-events-none fixed inset-0 grain-overlay z-40"></div>
+
+  <!-- Header Section -->
+  <header class="border-b border-brand-charcoal/10 dark:border-dark-border sticky top-0 bg-brand-sand/90 dark:bg-dark-bg/90 backdrop-blur-md z-30 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      
+      <!-- Logo & Issue Mark -->
+      <div class="flex items-center space-x-4">
+        <a href="#" class="font-serif-editorial text-2xl sm:text-3xl tracking-tight font-medium hover:text-brand-accent transition-colors">
+          NEXUS<span class="text-brand-accent">.</span>
+        </a>
+        <span class="hidden md:inline-block h-4 w-px bg-brand-charcoal/20 dark:bg-dark-border"></span>
+        <span class="hidden md:inline-block text-xs uppercase tracking-widest text-brand-charcoal/60 dark:text-dark-muted font-mono">
+          ISSUE 04 — SPORT & LIFESTYLE 2030
+        </span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center space-x-8 text-xs uppercase tracking-wider font-semibold">
+        <a href="#hero-article" class="hover:text-brand-accent transition-colors">Essays</a>
+        <a href="#future-index" class="hover:text-brand-accent transition-colors">Future Index</a>
+        <a href="#longevity-simulator" class="hover:text-brand-accent transition-colors">Digital Twin Lab</a>
+        <a href="#hybrid-ecosystem" class="hover:text-brand-accent transition-colors">Architecture</a>
+      </nav>
+
+      <!-- Action Controls (Sound & Theme Toggle) -->
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <!-- Audio Ambient Focus Toggle -->
+        <button id="audio-toggle" title="Toggle Focus Soundscape (Web Audio API)" class="flex items-center space-x-2 px-3 py-1.5 rounded-full border border-brand-charcoal/20 dark:border-dark-border text-xs uppercase tracking-wider hover:border-brand-accent hover:text-brand-accent transition-all">
+          <i class="fa-solid fa-volume-xmark" id="audio-icon"></i>
+          <span class="hidden sm:inline font-mono text-[11px]" id="audio-text">Focus Audio</span>
+        </button>
+
+        <!-- Dark/Light Theme Toggle -->
+        <button id="theme-toggle" class="p-2 rounded-full border border-brand-charcoal/20 dark:border-dark-border hover:border-brand-accent transition-all text-xs" title="Toggle Light/Dark Theme">
+          <i class="fa-solid fa-moon dark:hidden"></i>
+          <i class="fa-solid fa-sun hidden dark:inline"></i>
+        </button>
+
+        <a href="#longevity-simulator" class="hidden sm:inline-block bg-brand-charcoal dark:bg-dark-text text-brand-sand dark:text-dark-bg px-4 py-2 text-xs uppercase font-semibold tracking-wider hover:bg-brand-accent dark:hover:bg-brand-accent dark:hover:text-white transition-all rounded">
+          Launch Twin
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub-Header / Ticker -->
+  <div class="border-b border-brand-charcoal/10 dark:border-dark-border bg-brand-sandDark/50 dark:bg-dark-card/50 text-[11px] font-mono py-2">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-brand-charcoal/70 dark:text-dark-muted">
+      <div class="flex items-center space-x-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>LIVE REPORT: THE SHIFT FROM PEAK PERFORMANCE TO LONGEVITY</span>
+      </div>
+      <div class="hidden sm:flex space-x-6">
+        <span>BIOMETRIC INDEX: +18.4%</span>
+        <span>NEURO-ATHLETICISM: 2030 MATRICES</span>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO EDITORIAL ARTICLE -->
+    <article id="hero-article" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 border-b border-brand-charcoal/10 dark:border-dark-border">
+      
+      <!-- Article Header Meta -->
+      <div class="max-w-4xl mx-auto text-center mb-10">
+        <div class="inline-flex items-center space-x-2 text-xs font-mono uppercase tracking-widest text-brand-accent mb-4">
+          <span>Keynote Essay</span>
+          <span>•</span>
+          <span>7 Min Read</span>
+          <span>•</span>
+          <span id="current-date-display">OCTOBER 2026</span>
+        </div>
+        
+        <h1 class="font-serif-editorial text-4xl sm:text-6xl lg:text-7xl font-light leading-[1.08] tracking-tight mb-6">
+          Beyond Peak Human: <br class="hidden sm:inline">
+          <span class="italic font-normal">The Convergence of Longevity, Biometrics, & Social Athleticism</span>
+        </h1>
+
+        <p class="text-lg sm:text-xl text-brand-charcoal/80 dark:text-dark-muted max-w-2xl mx-auto font-serif-editorial leading-relaxed italic">
+          Why the future of sport is moving away from brute exhaustion toward continuous biological synchronization, neuro-recovery, and high-frequency community bonds.
+        </p>
+
+        <!-- Author / Meta details -->
+        <div class="mt-8 flex items-center justify-center space-x-4 border-t border-b border-brand-charcoal/10 dark:border-dark-border py-4 max-w-md mx-auto text-xs uppercase tracking-wider font-semibold">
+          <span>By Dr. Elena Vance</span>
+          <span class="text-brand-charcoal/30 dark:text-dark-muted">•</span>
+          <span>Human Performance Institute</span>
+        </div>
+      </div>
+
+      <!-- Feature Image Banner -->
+      <div class="relative my-10 group overflow-hidden rounded-lg shadow-sm">
+        <img 
+          src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=1800&q=80" 
+          alt="Athlete engaged in mindful biometric performance" 
+          class="w-full h-[50vh] sm:h-[65vh] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        >
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-brand-charcoal/90 via-brand-charcoal/40 to-transparent p-6 text-white">
+          <div class="max-w-3xl">
+            <p class="text-xs font-mono uppercase tracking-widest text-brand-sand/80">Fig 01. The Hybrid Runner</p>
+            <p class="text-sm font-serif-editorial italic mt-1 text-brand-sand">Continuous glucose and HRV telemetry streaming live to dynamic neural coaching systems during sunset active-recovery runs.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Article Main Content & Sticky TOC Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12">
+        
+        <!-- Sticky Table of Contents (Desktop) -->
+        <aside class="hidden lg:block lg:col-span-3">
+          <div class="sticky top-28 space-y-4 border-l border-brand-charcoal/20 dark:border-dark-border pl-4">
+            <p class="text-xs font-mono uppercase tracking-widest text-brand-charcoal/50 dark:text-dark-muted">Article Index</p>
+            <nav class="flex flex-col space-y-2 text-xs font-medium text-brand-charcoal/70 dark:text-dark-muted">
+              <a href="#sec-1" class="hover:text-brand-accent transition-colors">01. The Death of Burning Out</a>
+              <a href="#sec-2" class="hover:text-brand-accent transition-colors">02. Digital Twins & Real-Time Sync</a>
+              <a href="#sec-3" class="hover:text-brand-accent transition-colors">03. Social Run Clubs as the New Third Place</a>
+            </nav>
+
+            <div class="pt-6">
+              <div class="p-4 bg-brand-sandDark/60 dark:bg-dark-card rounded text-xs space-y-2">
+                <p class="font-semibold text-brand-charcoal dark:text-dark-text">Bookmark Essay</p>
+                <p class="text-brand-charcoal/60 dark:text-dark-muted text-[11px]">Save this issue to your offline digital pocket.</p>
+                <button id="save-essay-btn" class="w-full py-1.5 border border-brand-charcoal/30 dark:border-dark-border rounded text-[11px] font-semibold hover:bg-brand-accent hover:text-white transition-all">
+                  <i class="fa-regular fa-bookmark mr-1"></i> Save Article
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Reading Body Text -->
+        <div class="lg:col-span-9 max-w-3xl space-y-8 font-serif-editorial text-lg sm:text-xl leading-relaxed text-brand-charcoal/90 dark:text-dark-text">
+          
+          <p id="sec-1" class="first-letter:text-5xl first-letter:font-light first-letter:float-left first-letter:mr-3 first-letter:text-brand-accent font-serif-editorial">
+            For nearly half a century, modern fitness culture was dominated by a single, punishing dogma: <em>No Pain, No Gain</em>. Success was measured in sweat, strain, and near-exhaustion. However, as we approach 2030, a profound paradigm shift is underway. The elite athletic mindset is no longer defined by maximum output—it is defined by total systemic equilibrium.
+          </p>
+
+          <!-- Interactive Pull Quote -->
+          <blockquote class="my-10 border-l-2 border-brand-accent pl-6 italic text-2xl sm:text-3xl text-brand-charcoal dark:text-dark-text font-serif-editorial">
+            "We are transitioning from an era of destructive training to an era of generative biology, where performance and healthspan are identical metrics."
+          </blockquote>
+
+          <h3 id="sec-2" class="font-sans font-semibold text-2xl tracking-tight text-brand-charcoal dark:text-dark-text pt-4">
+            02. The AI Digital Twin & Continuous Synchronization
+          </h3>
+
+          <p>
+            Rather than relying on generic workout regimes, athletes today interact with dynamic biophysical software—their <strong>Digital Twin</strong>. Synthesizing data from non-invasive biomarker patches, continuous glucose monitors, and sleep architecture sensors, these neural models compute real-time readiness.
+          </p>
+
+          <p>
+            If your HRV (Heart Rate Variability) drops 15% due to travel stress or poor circadian alignment, your daily training plan autonomously shifts from high-intensity intervals to targeted neuro-sensory recovery or active zone 1 movement.
+          </p>
+
+          <!-- Interactive Data Insight Box -->
+          <div class="my-8 p-6 bg-brand-paper dark:bg-dark-card border border-brand-charcoal/15 dark:border-dark-border rounded-lg font-sans text-sm">
+            <div class="flex items-center justify-between mb-3 border-b border-brand-charcoal/10 dark:border-dark-border pb-2">
+              <span class="font-mono text-xs text-brand-accent uppercase font-bold tracking-wider">Shift Matrix / 2026–2030</span>
+              <span class="text-xs text-brand-charcoal/50 dark:text-dark-muted">NEXUS Insight Lab</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div class="p-3 bg-brand-sand/50 dark:bg-dark-bg rounded">
+                <p class="font-bold text-brand-charcoal dark:text-dark-text">Legacy Athleticism (2015-2023)</p>
+                <p class="text-brand-charcoal/70 dark:text-dark-muted mt-1">Lactic tolerance, high-calorie burn targets, generic gym memberships, and episodic medical checkups.</p>
+              </div>
+              <div class="p-3 bg-brand-accent/10 border border-brand-accent/30 rounded">
+                <p class="font-bold text-brand-accent">Future Lifestyle (2026-2030+)</p>
+                <p class="text-brand-charcoal/80 dark:text-dark-muted mt-1">Mitochondrial density, VO2 Max longevity optimization, social run communities, and autonomous neuro-restoration.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 id="sec-3" class="font-sans font-semibold text-2xl tracking-tight text-brand-charcoal dark:text-dark-text pt-4">
+            03. Social Run Clubs as the New 'Third Place'
+          </h3>
+
+          <p>
+            As traditional social hubs evolve, athletic communities have stepped up to become the primary epicenter of human connection. The modern run club, pickleball syndicate, and group recovery lounge have replaced conventional nightlife for a generation prioritizing mental clarity, physical vitality, and authentic community bonding.
+          </p>
+
+          <p class="text-base text-brand-charcoal/70 dark:text-dark-muted italic border-t border-brand-charcoal/10 dark:border-dark-border pt-4">
+            Published under NEXUS Open Research Initiative. All telemetry insights updated weekly.
+          </p>
+
+        </div>
+      </div>
+    </article>
+
+    <!-- INTERACTIVE FUTURE INDEX GRID -->
+    <section id="future-index" class="bg-brand-sandDark/40 dark:bg-dark-card/40 py-16 border-b border-brand-charcoal/10 dark:border-dark-border">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Title & Filters -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+          <div>
+            <span class="font-mono text-xs uppercase tracking-widest text-brand-accent">Curated Radar</span>
+            <h2 class="font-serif-editorial text-3xl sm:text-5xl font-light mt-1">Future Index 2030</h2>
+          </div>
+
+          <!-- Category Filters -->
+          <div class="flex flex-wrap gap-2 text-xs font-semibold uppercase tracking-wider" id="filter-buttons">
+            <button data-category="all" class="filter-btn active px-4 py-2 rounded-full border border-brand-charcoal dark:border-dark-text bg-brand-charcoal text-white dark:bg-dark-text dark:text-dark-bg transition-all">
+              All Trends
+            </button>
+            <button data-category="biometrics" class="filter-btn px-4 py-2 rounded-full border border-brand-charcoal/20 dark:border-dark-border hover:border-brand-accent transition-all">
+              Biometrics
+            </button>
+            <button data-category="social" class="filter-btn px-4 py-2 rounded-full border border-brand-charcoal/20 dark:border-dark-border hover:border-brand-accent transition-all">
+              Social Communities
+            </button>
+            <button data-category="gear" class="filter-btn px-4 py-2 rounded-full border border-brand-charcoal/20 dark:border-dark-border hover:border-brand-accent transition-all">
+              Sustainable Gear
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="cards-container">
+          
+          <!-- Card 1 -->
+          <div class="index-card group bg-brand-paper dark:bg-dark-card border border-brand-charcoal/10 dark:border-dark-border rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-brand-accent" data-category="biometrics">
+            <div>
+              <div class="relative overflow-hidden h-52">
+                <img src="https://images.unsplash.com/photo-1510519138161-58446231f11f?auto=format&fit=crop&w=800&q=80" alt="Wearable Biometrics" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-3 left-3 bg-brand-charcoal/80 text-brand-sand text-[10px] font-mono uppercase px-2.5 py-1 rounded backdrop-blur">Biometrics</span>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-center text-xs font-mono text-brand-accent mb-2">
+                  <span>+42% ADOPTION</span>
+                  <span>INDEX #01</span>
+                </div>
+                <h3 class="font-serif-editorial text-2xl font-normal mb-2 text-brand-charcoal dark:text-dark-text group-hover:text-brand-accent transition-colors">Micro-Biomarker Patches</h3>
+                <p class="text-sm text-brand-charcoal/70 dark:text-dark-muted font-sans leading-relaxed">Continuous sweat and interstitial fluid sensors delivering live hormone and hydration feedback without needles.</p>
+              </div>
+            </div>
+            <div class="p-6 pt-0">
+              <button onclick="openModal('Micro-Biomarker Patches', 'Micro-biomarker patches represent a quantum leap from wrist wearables. Placed unobtrusively on the inner arm or torso, these dermal patches continuously measure lactate thresholds, cortisol levels, and electrolyte balance in real time. Athletes receive dynamic nudges during long efforts to replenish key nutrients before systemic fatigue hits.')" class="text-xs uppercase font-bold tracking-wider text-brand-accent flex items-center space-x-1 hover:underline">
+                <span>Read Research Brief</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="index-card group bg-brand-paper dark:bg-dark-card border border-brand-charcoal/10 dark:border-dark-border rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-brand-accent" data-category="social">
+            <div>
+              <div class="relative overflow-hidden h-52">
+                <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=800&q=80" alt="Social Run Club" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-3 left-3 bg-brand-charcoal/80 text-brand-sand text-[10px] font-mono uppercase px-2.5 py-1 rounded backdrop-blur">Social</span>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-center text-xs font-mono text-brand-accent mb-2">
+                  <span>+85% PARTICIPATION</span>
+                  <span>INDEX #02</span>
+                </div>
+                <h3 class="font-serif-editorial text-2xl font-normal mb-2 text-brand-charcoal dark:text-dark-text group-hover:text-brand-accent transition-colors">Micro-Run Clubs & Third Spaces</h3>
+                <p class="text-sm text-brand-charcoal/70 dark:text-dark-muted font-sans leading-relaxed">Neighborhood athletic hubs that blend community coffee culture, shared interval workouts, and recovery saunas.</p>
+              </div>
+            </div>
+            <div class="p-6 pt-0">
+              <button onclick="openModal('Micro-Run Clubs', 'Urban centers worldwide are witnessing an explosion of run clubs that function as primary social networks. Unlike traditional competitive track clubs, these groups prioritize inclusive pacing, ambient coffee culture, post-run cold plunges, and shared lifestyle values, redefining urban wellness socialization.')" class="text-xs uppercase font-bold tracking-wider text-brand-accent flex items-center space-x-1 hover:underline">
+                <span>Read Research Brief</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="index-card group bg-brand-paper dark:bg-dark-card border border-brand-charcoal/10 dark:border-dark-border rounded-lg overflow-hidden flex flex-col justify-between transition-all duration-300 hover:border-brand-accent" data-category="gear">
+            <div>
+              <div class="relative overflow-hidden h-52">
+                <img src="https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80" alt="Bio Synthetic Gear" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <span class="absolute top-3 left-3 bg-brand-charcoal/80 text-brand-sand text-[10px] font-mono uppercase px-2.5 py-1 rounded backdrop-blur">Sustainable Gear</span>
+              </div>
+              <div class="p-6">
+                <div class="flex justify-between items-center text-xs font-mono text-brand-accent mb-2">
+                  <span>CIRCULAR TECH</span>
+                  <span>INDEX #03</span>
+                </div>
+                <h3 class="font-serif-editorial text-2xl font-normal mb-2 text-brand-charcoal dark:text-dark-text group-hover:text-brand-accent transition-colors">Mycelium & Algae Performance Apparel</h3>
+                <p class="text-sm text-brand-charcoal/70 dark:text-dark-muted font-sans leading-relaxed">Fully compostable activewear woven from bio-engineered algae polymers and mushroom root threads.</p>
+              </div>
+            </div>
+            <div class="p-6 pt-0">
+              <button onclick="openModal('Mycelium & Algae Gear', 'Petrochemical-based synthetic activewear is being phased out in favor of bio-fabricated textiles. By utilizing lab-grown mycelium matrix structures and algae-based polymers, gear brands can produce lightweight, moisture-wicking apparel that naturally biodegrades into non-toxic compost at the end of its lifecycle.')" class="text-xs uppercase font-bold tracking-wider text-brand-accent flex items-center space-x-1 hover:underline">
+                <span>Read Research Brief</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE FEATURE: 2030 LONGEVITY & ATHLETIC TWIN SIMULATOR -->
+    <section id="longevity-simulator" class="py-20 border-b border-brand-charcoal/10 dark:border-dark-border bg-brand-sand dark:bg-dark-bg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-14">
+          <span class="font-mono text-xs uppercase tracking-widest text-brand-accent">Interactive Lab</span>
+          <h2 class="font-serif-editorial text-4xl sm:text-5xl font-light mt-2 mb-4">Personal 2030 Athletic Twin Simulator</h2>
+          <p class="text-brand-charcoal/70 dark:text-dark-muted font-serif-editorial text-lg italic">
+            Configure your lifestyle profile to simulate your 2030 biological optimization scores, recommended ecosystem stacks, and recovery ratios.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          <!-- Input Form Panel -->
+          <div class="lg:col-span-6 bg-brand-paper dark:bg-dark-card p-6 sm:p-8 rounded-lg border border-brand-charcoal/15 dark:border-dark-border shadow-sm space-y-6">
+            
+            <h3 class="font-mono text-xs uppercase tracking-widest text-brand-charcoal/60 dark:text-dark-muted border-b border-brand-charcoal/10 dark:border-dark-border pb-3">
+              Input Parameters
+            </h3>
+
+            <!-- Age Slider -->
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-2">
+                <label for="input-age">Current Age</label>
+                <span id="val-age" class="font-mono text-brand-accent">28 Years</span>
+              </div>
+              <input type="range" id="input-age" min="18" max="75" value="28" class="w-full bg-brand-sandDark dark:bg-dark-border h-2 rounded-lg cursor-pointer">
+            </div>
+
+            <!-- Primary Goal Dropdown -->
+            <div>
+              <label class="block text-xs font-semibold mb-2" for="input-goal">Primary Longevity Focus</label>
+              <select id="input-goal" class="w-full p-3 bg-brand-sand dark:bg-dark-bg border border-brand-charcoal/20 dark:border-dark-border rounded text-sm focus:outline-none focus:border-brand-accent font-sans">
+                <option value="healthspan">Maximum Healthspan & Metabolic Stability</option>
+                <option value="hybrid">Peak Hybrid Athletic Performance</option>
+                <option value="neuro">Neuro-Cognitive Focus & Stress Resiliency</option>
+                <option value="social">Social Connection & Active Movement</option>
+              </select>
+            </div>
+
+            <!-- Weekly Movement Hours -->
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-2">
+                <label for="input-hours">Weekly Active Hours</label>
+                <span id="val-hours" class="font-mono text-brand-accent">6 Hours / Wk</span>
+              </div>
+              <input type="range" id="input-hours" min="1" max="20" value="6" class="w-full bg-brand-sandDark dark:bg-dark-border h-2 rounded-lg cursor-pointer">
+            </div>
+
+            <!-- Tech Adoption Level -->
+            <div>
+              <label class="block text-xs font-semibold mb-2">Wearables & Tech Adoption</label>
+              <div class="grid grid-cols-3 gap-2 text-xs font-medium">
+                <button type="button" onclick="setTechLevel('minimal')" id="tech-minimal" class="tech-btn p-2.5 rounded border border-brand-charcoal/20 dark:border-dark-border text-center hover:border-brand-accent">Minimal</button>
+                <button type="button" onclick="setTechLevel('moderate')" id="tech-moderate" class="tech-btn active p-2.5 rounded border border-brand-accent bg-brand-accent/10 text-brand-accent text-center font-bold">Moderate</button>
+                <button type="button" onclick="setTechLevel('advanced')" id="tech-advanced" class="tech-btn p-2.5 rounded border border-brand-charcoal/20 dark:border-dark-border text-center hover:border-brand-accent">Advanced</button>
+              </div>
+            </div>
+
+            <button id="calc-btn" class="w-full py-3.5 bg-brand-charcoal dark:bg-dark-text text-brand-sand dark:text-dark-bg text-xs uppercase font-bold tracking-widest hover:bg-brand-accent dark:hover:bg-brand-accent dark:hover:text-white transition-all rounded">
+              Recalculate Twin Model
+            </button>
+          </div>
+
+          <!-- Simulation Output Results Card -->
+          <div class="lg:col-span-6 bg-brand-charcoal text-brand-sand dark:bg-dark-card dark:text-dark-text p-6 sm:p-8 rounded-lg border border-brand-charcoal dark:border-dark-border relative overflow-hidden">
+            <div class="flex justify-between items-center border-b border-brand-sand/10 dark:border-dark-border pb-4 mb-6">
+              <div>
+                <span class="font-mono text-[10px] text-brand-accent uppercase tracking-widest">Simulated Output</span>
+                <h4 class="font-serif-editorial text-2xl font-light text-white">2030 Athletic Twin Profile</h4>
+              </div>
+              <span class="px-2.5 py-1 bg-brand-accent/20 text-brand-accent font-mono text-[10px] uppercase rounded">Live Computed</span>
+            </div>
+
+            <!-- Calculated Metrics Visual Bars -->
+            <div class="space-y-5">
+              
+              <!-- Metric 1 -->
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span>BIO-SYNCHRONIZATION SCORE</span>
+                  <span id="score-bio" class="text-brand-accent font-bold">84 / 100</span>
+                </div>
+                <div class="w-full h-2 bg-brand-sand/10 dark:bg-dark-border rounded-full overflow-hidden">
+                  <div id="bar-bio" class="h-full bg-brand-accent transition-all duration-700" style="width: 84%"></div>
+                </div>
+              </div>
+
+              <!-- Metric 2 -->
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span>HYBRID ECOSYSTEM ACCELERATION</span>
+                  <span id="score-eco" class="text-brand-accent font-bold">72%</span>
+                </div>
+                <div class="w-full h-2 bg-brand-sand/10 dark:bg-dark-border rounded-full overflow-hidden">
+                  <div id="bar-eco" class="h-full bg-emerald-500 transition-all duration-700" style="width: 72%"></div>
+                </div>
+              </div>
+
+              <!-- Metric 3 -->
+              <div>
+                <div class="flex justify-between text-xs font-mono mb-1">
+                  <span>RECOMMENDED RECOVERY / EFFORT RATIO</span>
+                  <span id="score-rec" class="text-brand-accent font-bold">1 : 1.4</span>
+                </div>
+                <div class="w-full h-2 bg-brand-sand/10 dark:bg-dark-border rounded-full overflow-hidden">
+                  <div id="bar-rec" class="h-full bg-amber-500 transition-all duration-700" style="width: 65%"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Dynamic Recommendation Box -->
+            <div class="mt-8 p-4 bg-brand-sand/5 dark:bg-dark-bg/60 border border-brand-sand/10 dark:border-dark-border rounded space-y-2">
+              <span class="font-mono text-[11px] text-brand-accent uppercase">Tailored Blueprint 2030</span>
+              <p id="rec-text" class="font-serif-editorial text-sm leading-relaxed text-brand-sand/90 dark:text-dark-text italic">
+                Focus on low-intensity Zone 2 mitochondrial aerobic runs paired with bi-weekly continuous glucose monitoring. Maintain a 1:1.4 recovery-to-effort cadence.
+              </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-6 flex items-center justify-between pt-4 border-t border-brand-sand/10 dark:border-dark-border">
+              <span class="text-[10px] font-mono text-brand-sand/50">NEXUS LABS MODEL V4.2</span>
+              <button onclick="copyTwinProfile()" class="text-xs uppercase tracking-wider font-semibold hover:text-brand-accent transition-colors flex items-center space-x-1">
+                <i class="fa-regular fa-copy text-xs"></i>
+                <span>Copy Summary</span>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- HYBRID ECOSYSTEM SPEC SHEET & DIAGRAM -->
+    <section id="hybrid-ecosystem" class="py-20 border-b border-brand-charcoal/10 dark:border-dark-border bg-brand-paper dark:bg-dark-card/30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div>
+            <span class="font-mono text-xs uppercase tracking-widest text-brand-accent">Architecture</span>
+            <h2 class="font-serif-editorial text-3xl sm:text-5xl font-light mt-1">The Hybrid Sport Ecosystem</h2>
+          </div>
+          <p class="text-sm font-serif-editorial text-brand-charcoal/70 dark:text-dark-muted max-w-md italic mt-4 md:mt-0">
+            Click across layers to examine how physical venues, neural computation, and human biological outputs unite.
+          </p>
+        </div>
+
+        <!-- Interactive Hotspot Diagram Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Layer 1 -->
+          <div class="ecosystem-card border border-brand-charcoal/15 dark:border-dark-border p-6 rounded-lg bg-brand-sand dark:bg-dark-card hover:border-brand-accent transition-all cursor-pointer group" onclick="highlightLayer(1)">
+            <div class="flex justify-between items-center mb-4">
+              <span class="font-mono text-xs text-brand-accent font-bold">LAYER 01</span>
+              <i class="fa-solid fa-layer-group text-brand-charcoal/30 dark:text-dark-muted group-hover:text-brand-accent transition-colors"></i>
+            </div>
+            <h3 class="font-serif-editorial text-2xl mb-2">Physical Arena & Nature</h3>
+            <p class="text-xs text-brand-charcoal/70 dark:text-dark-muted leading-relaxed font-sans">
+              Eco-conscious running trails, regenerative recovery clubs, and micro-gym hubs equipped with spatial audio and biometric tracking environments.
+            </p>
+            <div class="mt-6 pt-4 border-t border-brand-charcoal/10 dark:border-dark-border text-[11px] font-mono text-brand-charcoal/60 dark:text-dark-muted">
+              Key Focus: Environmental Harmony
+            </div>
+          </div>
+
+          <!-- Layer 2 -->
+          <div class="ecosystem-card border border-brand-charcoal/15 dark:border-dark-border p-6 rounded-lg bg-brand-sand dark:bg-dark-card hover:border-brand-accent transition-all cursor-pointer group" onclick="highlightLayer(2)">
+            <div class="flex justify-between items-center mb-4">
+              <span class="font-mono text-xs text-brand-accent font-bold">LAYER 02</span>
+              <i class="fa-solid fa-microchip text-brand-charcoal/30 dark:text-dark-muted group-hover:text-brand-accent transition-colors"></i>
+            </div>
+            <h3 class="font-serif-editorial text-2xl mb-2">Digital Twin & Telemetry</h3>
+            <p class="text-xs text-brand-charcoal/70 dark:text-dark-muted leading-relaxed font-sans">
+              Autonomous AI neural engines parsing continuous heart-rate variability, sleep delta waves, continuous lactate streaming, and cognitive strain.
+            </p>
+            <div class="mt-6 pt-4 border-t border-brand-charcoal/10 dark:border-dark-border text-[11px] font-mono text-brand-charcoal/60 dark:text-dark-muted">
+              Key Focus: Real-time Signal Processing
+            </div>
+          </div>
+
+          <!-- Layer 3 -->
+          <div class="ecosystem-card border border-brand-charcoal/15 dark:border-dark-border p-6 rounded-lg bg-brand-sand dark:bg-dark-card hover:border-brand-accent transition-all cursor-pointer group" onclick="highlightLayer(3)">
+            <div class="flex justify-between items-center mb-4">
+              <span class="font-mono text-xs text-brand-accent font-bold">LAYER 03</span>
+              <i class="fa-solid fa-heart-pulse text-brand-charcoal/30 dark:text-dark-muted group-hover:text-brand-accent transition-colors"></i>
+            </div>
+            <h3 class="font-serif-editorial text-2xl mb-2">Human Longevity Outcome</h3>
+            <p class="text-xs text-brand-charcoal/70 dark:text-dark-muted leading-relaxed font-sans">
+              Extended healthspan, optimized VO2 Max, reduced injury frequency, sustained neuro-plasticity, and vibrant community belonging.
+            </p>
+            <div class="mt-6 pt-4 border-t border-brand-charcoal/10 dark:border-dark-border text-[11px] font-mono text-brand-charcoal/60 dark:text-dark-muted">
+              Key Focus: Sustained Healthspan
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-brand-charcoal text-brand-sand dark:bg-dark-bg dark:text-dark-text py-16 border-t border-brand-charcoal/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-brand-sand/10 dark:border-dark-border">
+        
+        <div class="md:col-span-6 space-y-4">
+          <a href="#" class="font-serif-editorial text-3xl font-light tracking-tight text-white">
+            NEXUS<span class="text-brand-accent">.</span>
+          </a>
+          <p class="text-xs text-brand-sand/70 dark:text-dark-muted max-w-sm font-sans leading-relaxed">
+            An independent editorial digital journal investigating the future of human physical performance, longevity science, and social athletic movement.
+          </p>
+        </div>
+
+        <div class="md:col-span-3 space-y-2 text-xs font-sans">
+          <p class="font-mono text-brand-accent uppercase tracking-widest text-[11px] mb-3">EDITIONS</p>
+          <p><a href="#" class="hover:underline text-brand-sand/80">Issue 01: The New Athleticism</a></p>
+          <p><a href="#" class="hover:underline text-brand-sand/80">Issue 02: Longevity Systems</a></p>
+          <p><a href="#" class="hover:underline text-brand-sand/80">Issue 03: Biomarker Revolution</a></p>
+          <p><a href="#" class="hover:underline text-brand-sand/80">Issue 04: Sport & Lifestyle 2030</a></p>
+        </div>
+
+        <div class="md:col-span-3 space-y-2 text-xs font-sans">
+          <p class="font-mono text-brand-accent uppercase tracking-widest text-[11px] mb-3">RESEARCH LAB</p>
+          <p><a href="#longevity-simulator" class="hover:underline text-brand-sand/80">Digital Twin Simulator</a></p>
+          <p><a href="#future-index" class="hover:underline text-brand-sand/80">Trend Index 2030</a></p>
+          <p><a href="#" class="hover:underline text-brand-sand/80">Editorial Standards</a></p>
+        </div>
+
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-[11px] font-mono text-brand-sand/50 dark:text-dark-muted">
+        <p>© 2026 NEXUS DIGITAL PUBLICATION. ALL RIGHTS RESERVED.</p>
+        <p class="mt-2 sm:mt-0">DESIGNED FOR HUMAN HEALTHSPAN & LIFESTYLE</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Modal for Research Briefs -->
+  <div id="brief-modal" class="fixed inset-0 bg-brand-charcoal/80 dark:bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-brand-paper dark:bg-dark-card border border-brand-charcoal/20 dark:border-dark-border max-w-lg w-full rounded-lg p-6 sm:p-8 relative shadow-2xl">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-brand-charcoal/50 dark:text-dark-muted hover:text-brand-accent text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <span class="font-mono text-xs text-brand-accent uppercase tracking-widest">Research Brief</span>
+      <h3 id="modal-title" class="font-serif-editorial text-3xl my-2 text-brand-charcoal dark:text-dark-text">Title</h3>
+      <p id="modal-body" class="text-sm font-sans text-brand-charcoal/80 dark:text-dark-muted leading-relaxed my-4">
+        Deep dive text...
+      </p>
+      <div class="pt-4 border-t border-brand-charcoal/10 dark:border-dark-border flex justify-between items-center text-xs font-mono">
+        <span class="text-brand-charcoal/50">NEXUS VERIFIED DATA</span>
+        <button onclick="closeModal()" class="px-4 py-2 bg-brand-charcoal dark:bg-dark-text text-brand-sand dark:text-dark-bg uppercase font-bold rounded">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-brand-charcoal text-brand-sand dark:bg-dark-text dark:text-dark-bg px-4 py-3 rounded shadow-lg text-xs font-mono uppercase tracking-wider transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-2">
+    <i class="fa-solid fa-check text-brand-accent"></i>
+    <span id="toast-msg">Action Completed</span>
+  </div>
+
+  <script>
+    /* ----------------------------------------------------
+       1. READING PROGRESS BAR
+    ---------------------------------------------------- */
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    /* ----------------------------------------------------
+       2. WEB AUDIO API AMBIENT SOUNDSCAPE GENERATOR
+    ---------------------------------------------------- */
+    let audioCtx = null;
+    let oscillator = null;
+    let gainNode = null;
+    let isPlayingAudio = false;
+
+    const audioBtn = document.getElementById('audio-toggle');
+    const audioIcon = document.getElementById('audio-icon');
+    const audioText = document.getElementById('audio-text');
+
+    audioBtn.addEventListener('click', () => {
+      if (!isPlayingAudio) {
+        startFocusAudio();
+      } else {
+        stopFocusAudio();
+      }
+    });
+
+    function startFocusAudio() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+
+        // Create warm ambient low sine wave
+        oscillator = audioCtx.createOscillator();
+        gainNode = audioCtx.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(110, audioCtx.currentTime); // Soft A2 tone
+
+        // Gentle volume fade in
+        gainNode.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.04, audioCtx.currentTime + 2);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.start();
+        isPlayingAudio = true;
+
+        audioIcon.className = 'fa-solid fa-volume-high text-brand-accent';
+        audioText.innerText = 'Audio On';
+        showToast('Ambient Focus Audio Activated');
+      } catch (e) {
+        console.warn('Web Audio API not fully supported', e);
+      }
+    }
+
+    function stopFocusAudio() {
+      if (gainNode && audioCtx) {
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+        setTimeout(() => {
+          if (oscillator) oscillator.stop();
+          isPlayingAudio = false;
+          audioIcon.className = 'fa-solid fa-volume-xmark';
+          audioText.innerText = 'Focus Audio';
+          showToast('Focus Audio Stopped');
+        }, 1000);
+      }
+    }
+
+    /* ----------------------------------------------------
+       3. DARK / LIGHT EDITORIAL THEME TOGGLE
+    ---------------------------------------------------- */
+    const themeBtn = document.getElementById('theme-toggle');
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      showToast(isDark ? 'Dark Editorial Mode Active' : 'Light Editorial Mode Active');
+    });
+
+    /* ----------------------------------------------------
+       4. FUTURE INDEX FILTERING
+    ---------------------------------------------------- */
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const indexCards = document.querySelectorAll('.index-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Reset active states
+        filterBtns.forEach(b => {
+          b.classList.remove('bg-brand-charcoal', 'text-white', 'dark:bg-dark-text', 'dark:text-dark-bg');
+          b.classList.add('border-brand-charcoal/20', 'dark:border-dark-border');
+        });
+
+        // Set active for clicked
+        btn.classList.add('bg-brand-charcoal', 'text-white', 'dark:bg-dark-text', 'dark:text-dark-bg');
+
+        const cat = btn.getAttribute('data-category');
+
+        indexCards.forEach(card => {
+          if (cat === 'all' || card.getAttribute('data-category') === cat) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    /* ----------------------------------------------------
+       5. LONGEVITY & ATHLETIC TWIN SIMULATOR LOGIC
+    ---------------------------------------------------- */
+    const inputAge = document.getElementById('input-age');
+    const inputHours = document.getElementById('input-hours');
+    const inputGoal = document.getElementById('input-goal');
+    const valAge = document.getElementById('val-age');
+    const valHours = document.getElementById('val-hours');
+    let techLevel = 'moderate';
+
+    inputAge.addEventListener('input', (e) => {
+      valAge.innerText = `${e.target.value} Years`;
+    });
+
+    inputHours.addEventListener('input', (e) => {
+      valHours.innerText = `${e.target.value} Hours / Wk`;
+    });
+
+    function setTechLevel(level) {
+      techLevel = level;
+      document.querySelectorAll('.tech-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-brand-accent', 'bg-brand-accent/10', 'text-brand-accent', 'font-bold');
+      });
+      const selected = document.getElementById(`tech-${level}`);
+      if (selected) {
+        selected.classList.add('active', 'border-brand-accent', 'bg-brand-accent/10', 'text-brand-accent', 'font-bold');
+      }
+    }
+
+    document.getElementById('calc-btn').addEventListener('click', calculateTwinProfile);
+
+    function calculateTwinProfile() {
+      const age = parseInt(inputAge.value);
+      const hours = parseInt(inputHours.value);
+      const goal = inputGoal.value;
+
+      // Calculation Algorithm
+      let bioScore = Math.min(98, Math.max(45, 100 - (age * 0.3) + (hours * 2.5)));
+      if (techLevel === 'advanced') bioScore += 8;
+      if (techLevel === 'minimal') bioScore -= 5;
+
+      let ecoScore = Math.min(95, hours * 6 + (techLevel === 'advanced' ? 25 : 10));
+      
+      // Dynamic ratio text calculation
+      let recRatio = (hours > 10) ? '1 : 1.8' : (hours > 5 ? '1 : 1.4' : '1 : 1.1');
+
+      // Recommendation Text Logic
+      let recMsg = '';
+      if (goal === 'healthspan') {
+        recMsg = `Prioritize Zone 2 mitochondrial stability and early morning circadian alignment. Target ${hours} hours of movement balanced with low neuro-strain.`;
+      } else if (goal === 'hybrid') {
+        recMsg = `Focus on high-intensity threshold blocks integrated with real-time biometric tracking. Maintain a strict ${recRatio} active recovery window.`;
+      } else if (goal === 'neuro') {
+        recMsg = `Emphasize cognitive recovery routines, breathwork sync, and ambient spatial auditory training to reduce chronic cortisol loads.`;
+      } else {
+        recMsg = `Leverage local run clubs and community group sessions to combine social wellness with aerobic base building.`;
+      }
+
+      // Update UI
+      document.getElementById('score-bio').innerText = `${Math.round(bioScore)} / 100`;
+      document.getElementById('bar-bio').style.width = `${Math.round(bioScore)}%`;
+
+      document.getElementById('score-eco').innerText = `${Math.round(ecoScore)}%`;
+      document.getElementById('bar-eco').style.width = `${Math.round(ecoScore)}%`;
+
+      document.getElementById('score-rec').innerText = recRatio;
+      document.getElementById('rec-text').innerText = recMsg;
+
+      showToast('2030 Twin Profile Computed');
+    }
+
+    function copyTwinProfile() {
+      const bio = document.getElementById('score-bio').innerText;
+      const rec = document.getElementById('rec-text').innerText;
+      const text = `NEXUS 2030 Athletic Twin Profile:\nBio-Sync Score: ${bio}\nBlueprint: ${rec}`;
+      
+      document.execCommand('copy');
+      showToast('Profile Copied to Clipboard');
+    }
+
+    /* ----------------------------------------------------
+       6. MODAL & INTERACTION HELPERS
+    ---------------------------------------------------- */
+    function openModal(title, body) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-body').innerText = body;
+      document.getElementById('brief-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('brief-modal').classList.add('hidden');
+    }
+
+    function highlightLayer(layerNum) {
+      showToast(`Selected Layer 0${layerNum} Architecture`);
+    }
+
+    document.getElementById('save-essay-btn').addEventListener('click', () => {
+      showToast('Essay Bookmarked to Library');
+    });
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    // Set current date string
+    const now = new Date();
+    const options = { month: 'LONG', year: 'NUMERIC' };
+    document.getElementById('current-date-display').innerText = now.toLocaleDateString('en-US', options).toUpperCase();
+  </script>
+</body>
+</html>
